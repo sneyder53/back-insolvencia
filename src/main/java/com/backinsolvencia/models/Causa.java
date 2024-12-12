@@ -1,12 +1,14 @@
 package com.backinsolvencia.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "causa")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -19,7 +21,8 @@ public class Causa {
     @Column(unique = true, nullable = false)
     private String nombre;
 
-    @OneToOne
-    @JoinColumn(name="insolvencia_id")
-    private Insolvencia insolvencia;
+    @ManyToMany(mappedBy = "causas")
+    @JsonIgnore
+    private List<Insolvencia> insolvencias;
+
 }

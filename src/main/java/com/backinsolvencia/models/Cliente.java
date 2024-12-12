@@ -1,15 +1,15 @@
 package com.backinsolvencia.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "cliente")
-@Getter
-@Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Data
 public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +34,9 @@ public class Cliente {
     @Column()
     private String direccion;
 
-    @OneToOne
-    @JoinColumn(name="insolvencia_id")
+
+    @OneToOne(mappedBy = "cliente")
+    @JsonIgnore
     private Insolvencia insolvencia;
+
 }

@@ -1,14 +1,13 @@
 package com.backinsolvencia.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.List;
 
 @Entity
 @Table(name = "insolvencia")
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -22,12 +21,16 @@ public class Insolvencia {
     private String estado;
 
     @OneToMany(mappedBy = "insolvenciaId", cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<InsolvenciaProducto> insolvenciaProductos;
 
-    @OneToOne(mappedBy = "insolvencia", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "cliente_id", referencedColumnName = "id")
     private Cliente cliente;
 
-    @OneToOne(mappedBy = "insolvencia", cascade = CascadeType.ALL)
-    private Causa causa;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable( name = "insolvencia_causas" ,
+            joinColumns = @JoinColumn(name = "insolvencia_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "causa_id", referencedColumnName = "id"))
+    private List<Causa> causas;
 }

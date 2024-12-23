@@ -33,4 +33,31 @@ public class Insolvencia {
             joinColumns = @JoinColumn(name = "insolvencia_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "causa_id", referencedColumnName = "id"))
     private List<Causa> causas;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "manutencion_id", referencedColumnName = "id")
+    private GastosManutencion gastosManutencion;
+
+    private float totalGastosManutencion;
+
+    @OneToMany(mappedBy = "insolvenciaId", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<BienesMueble> bienesMuebles;
+
+    private float totalMuebles;
+
+    @OneToMany(mappedBy = "insolvenciaId", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<BienesInmuebles> bienesInmuebles;
+
+    private float totalInmuebles;
+
+    @OneToMany(mappedBy = "insolvenciaId", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Judicial> judicials;
+
+    private float varloCuotaMensual;
+
+    private int tiempo;
+
 }

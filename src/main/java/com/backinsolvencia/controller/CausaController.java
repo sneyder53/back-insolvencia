@@ -50,9 +50,10 @@ public class CausaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteCausa(@PathVariable long id) {
+    public ResponseEntity<String> deleteCausa(@PathVariable long id) {
         try{
-            return new ResponseEntity<>(causaService.deleteCausaById(id), HttpStatus.OK);
+            causaService.deleteCausaById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (ExceptionsInsolvencia e){
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

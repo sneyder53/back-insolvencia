@@ -52,7 +52,8 @@ public class ProductoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProducto(@PathVariable long id) {
         try {
-            return new ResponseEntity<>(productoService.deleteProducto(id), HttpStatus.OK);
+            productoService.deleteProducto(id);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (ExceptionsInsolvencia e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
         }

@@ -66,8 +66,8 @@ public class TarifaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteTarifa(@PathVariable Long id){
         try {
-            String delete = tarifaService.deleteTarifa(id);
-            return ResponseEntity.status(HttpStatus.OK).body(delete);
+            tarifaService.deleteTarifa(id);
+            return new ResponseEntity<>(HttpStatus.OK);
         }catch (ExceptionsInsolvencia e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: " + e.getMessage() );
         }

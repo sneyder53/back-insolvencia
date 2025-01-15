@@ -24,6 +24,8 @@ public class Insolvencia {
     @JsonManagedReference
     private List<InsolvenciaProducto> insolvenciaProductos;
 
+    private float totalPoductos;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cliente_id", referencedColumnName = "id")
     private Cliente cliente;

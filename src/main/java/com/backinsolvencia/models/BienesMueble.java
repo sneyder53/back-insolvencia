@@ -30,7 +30,7 @@ public class BienesMueble {
 
     private float valor;
 
-    private String afectacion;
+    private boolean afectacion;
 
 
 }

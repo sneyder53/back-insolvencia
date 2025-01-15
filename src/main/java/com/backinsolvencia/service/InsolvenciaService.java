@@ -5,6 +5,7 @@ import com.backinsolvencia.models.*;
 import com.backinsolvencia.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,44 +40,38 @@ public class InsolvenciaService {
         return insolvenciaRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public Insolvencia addInsolvencia(Insolvencia insolvencia) throws Exception {
         Optional<Cliente> cliente = clienteRepository.findById(insolvencia.getCliente().getId());
         if (cliente.isPresent()) {
-            insolvencia.setCliente( cliente.get() );
+            insolvencia.setCliente(cliente.get());
             List<Causa> causas = new ArrayList<>();
             for (Causa causa : insolvencia.getCausas()) {
                 Optional<Causa> causanew = causaRepository.findById(causa.getId());
                 if (causanew.isEmpty()) {
-                   throw new ExceptionsInsolvencia("No existe la causa con el id " + causa.getId());
+                    throw new ExceptionsInsolvencia("No existe la causa con el id " + causa.getId());
                 }
                 causas.add(causanew.get());
             }
             insolvencia.setCausas(causas);
             if (causas != null) {
                 if (!insolvencia.getInsolvenciaProductos().isEmpty()) {
-                    try{
-                        List<InsolvenciaProducto> insolvenciaProductos = new ArrayList<>();
-                        for (InsolvenciaProducto insolvenciaProducto : insolvencia.getInsolvenciaProductos()) {
-                            Optional<Producto> producto = ProductoRepository.findById(insolvenciaProducto.getProductoId().getId());
-                            if (producto.isPresent()) {
-                                insolvenciaProducto.setProductoId( producto.get() );
-                                insolvenciaProductos.add(insolvenciaProducto);
-                            }
-                        }
-                        insolvencia.setInsolvenciaProductos(insolvenciaProductos);
-                        return insolvenciaRepository.save(insolvencia);
-                    } catch (Exception e) {
-                        throw new Exception(e.getMessage());
-                    }
+                    Insolvencia savedInsolvencia = insolvenciaRepository.save(insolvencia);
+                    for (InsolvenciaProducto insolvenciaProducto : insolvencia.getInsolvenciaProductos()) {
+                        insolvenciaProducto.setInsolvenciaId(savedInsolvencia);
+                        insolvenciaProducto.setProductoId(ProductoRepository.findById(insolvenciaProducto.getProductoId().getId()).get());
+                        insolvenciaProductoRepository.save(insolvenciaProducto);
 
+                    }
+                    savedInsolvencia.setInsolvenciaProductos(insolvencia.getInsolvenciaProductos());
+                    return savedInsolvencia;
                 } else {
                     throw new ExceptionsInsolvencia("No se encontraron productos");
                 }
-
             } else {
-                throw new ExceptionsInsolvencia("No existe las causas " + insolvencia.getCausas());
+                throw new ExceptionsInsolvencia("No existen las causas " + insolvencia.getCausas());
             }
-        }else {
+        } else {
             throw new ExceptionsInsolvencia("No existe el cliente con el id " + insolvencia.getCliente().getId());
         }
     }

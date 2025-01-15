@@ -33,7 +33,7 @@ public class ClienteService {
         try {
             return clienteRepository.save(cliente);
         } catch (Exception e) {
-            throw new Exception("la identificacion o el email ya existen "+e.getMessage());
+            throw new Exception("la identificacion o el email ya existen");
         }
 
     }
@@ -51,7 +51,7 @@ public class ClienteService {
             try {
                 return clienteRepository.save(clienteUpdate.get());
             }catch (Exception e) {
-                throw new Exception("la identificacion o el email ya existen "+e.getMessage());
+                throw new Exception("la identificacion o el email ya existen ");
             }
 
         }else {

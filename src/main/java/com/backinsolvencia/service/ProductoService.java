@@ -28,6 +28,14 @@ public class ProductoService {
         Optional<Producto> producto = productoRepository.findById(id);
         return producto.orElse(null);
     }
+    public List<Producto> findProductoByAcreedor(long id) {
+        Optional<Acreedor> acreedor = acreedorService.findById(id);
+        if (acreedor.isPresent()) {
+            return productoRepository.findByAcreedor(acreedor.get());
+        }else {
+            throw new ExceptionsInsolvencia("El Acreedor no existe");
+        }
+    }
 
     public Producto addProducto(Producto producto) {
         Optional<Acreedor> acreedor = acreedorService.findById(producto.getAcreedor().getId());

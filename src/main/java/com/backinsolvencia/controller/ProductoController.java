@@ -31,6 +31,13 @@ public class ProductoController {
         return new ResponseEntity<>(producto, HttpStatus.OK);
     }
 
+    @GetMapping("/acreedor/{id}")
+    public ResponseEntity<List<Producto>> findProductoByAcreedor(@PathVariable long id) {
+        List<Producto> productos = productoService.findProductoByAcreedor(id);
+        if (productos.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(productos, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
         try {

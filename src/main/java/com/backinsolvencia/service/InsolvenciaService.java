@@ -42,38 +42,36 @@ public class InsolvenciaService {
 
     @Transactional
     public Insolvencia addInsolvencia(Insolvencia insolvencia) throws Exception {
-        Optional<Cliente> cliente = clienteRepository.findById(insolvencia.getCliente().getId());
-        if (cliente.isPresent()) {
-            insolvencia.setCliente(cliente.get());
-            List<Causa> causas = new ArrayList<>();
-            for (Causa causa : insolvencia.getCausas()) {
-                Optional<Causa> causanew = causaRepository.findById(causa.getId());
-                if (causanew.isEmpty()) {
-                    throw new ExceptionsInsolvencia("No existe la causa con el id " + causa.getId());
-                }
-                causas.add(causanew.get());
+        Cliente cliente = clienteRepository.findById(insolvencia.getCliente().getId())
+                .orElseThrow(() -> new ExceptionsInsolvencia("No existe el cliente con el id " + insolvencia.getCliente().getId()));
+        insolvencia.setCliente(cliente);
+        List<Causa> causas = new ArrayList<>();
+        for (Causa causa : insolvencia.getCausas()) {
+             Causa causaExiste = causaRepository.findById(causa.getId())
+                    .orElseThrow(() -> new ExceptionsInsolvencia("No existe la causa con el id " + causa.getId()));
+             causas.add(causaExiste);
+        }
+        insolvencia.setCausas(causas);
+        if (!insolvencia.getCausas().isEmpty()) {
+            List<InsolvenciaProducto> InsolvenciaProductos= new ArrayList<>();
+            for (InsolvenciaProducto insolvenciaProducto : insolvencia.getInsolvenciaProductos()) {
+                Producto producto = ProductoRepository.findById(insolvenciaProducto.getProductoId().getId())
+                        .orElseThrow( () -> new ExceptionsInsolvencia("No existe el producto con el id " + insolvenciaProducto.getProductoId().getId()));
+                insolvenciaProducto.setProductoId(producto);
+                InsolvenciaProductos.add(insolvenciaProducto);
             }
-            insolvencia.setCausas(causas);
-            if (causas != null) {
-                if (!insolvencia.getInsolvenciaProductos().isEmpty()) {
-                    Insolvencia savedInsolvencia = insolvenciaRepository.save(insolvencia);
-                    for (InsolvenciaProducto insolvenciaProducto : insolvencia.getInsolvenciaProductos()) {
-                        insolvenciaProducto.setInsolvenciaId(savedInsolvencia);
-                        insolvenciaProducto.setProductoId(ProductoRepository.findById(insolvenciaProducto.getProductoId().getId()).get());
-                        insolvenciaProductoRepository.save(insolvenciaProducto);
-
-                    }
-                    savedInsolvencia.setInsolvenciaProductos(insolvencia.getInsolvenciaProductos());
-                    return savedInsolvencia;
-                } else {
-                    throw new ExceptionsInsolvencia("No se encontraron productos");
-                }
+            insolvencia.setInsolvenciaProductos(InsolvenciaProductos);
+            if (!InsolvenciaProductos.isEmpty()) {
+                cliente.setOrientacion(true);
+                clienteRepository.save(cliente);
+                return insolvenciaRepository.save(insolvencia);
             } else {
-                throw new ExceptionsInsolvencia("No existen las causas " + insolvencia.getCausas());
+                throw new ExceptionsInsolvencia("No se encontraron productos");
             }
         } else {
-            throw new ExceptionsInsolvencia("No existe el cliente con el id " + insolvencia.getCliente().getId());
+            throw new ExceptionsInsolvencia("No existe las causas con el id " + insolvencia.getCausas());
         }
+
     }
 
     public Insolvencia updateInsolvencia(Insolvencia insolvencia) {

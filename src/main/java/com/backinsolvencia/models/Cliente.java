@@ -46,6 +46,9 @@ public class Cliente {
     @Column( nullable = false)
     private Double descuentos;
 
+    @Column( nullable = false)
+    private boolean orientacion;
+
     @OneToOne(mappedBy = "cliente")
     @JsonIgnore
     private Insolvencia insolvencia;

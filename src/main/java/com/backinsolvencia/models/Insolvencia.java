@@ -24,7 +24,7 @@ public class Insolvencia {
     @JsonManagedReference
     private List<InsolvenciaProducto> insolvenciaProductos;
 
-    private float totalPoductos;
+    private float totalProductos;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cliente_id", referencedColumnName = "id")
@@ -56,7 +56,7 @@ public class Insolvencia {
 
     @OneToMany(mappedBy = "insolvenciaId", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private List<Judicial> judicials;
+    private List<Judicial> judicial;
 
     private float varloCuotaMensual;
 

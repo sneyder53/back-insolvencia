@@ -36,7 +36,7 @@ public class GastosManutencion {
 
     private float seguro;
 
-    private float aliminacion;
+    private float alimentacion;
 
     private float educacion;
 

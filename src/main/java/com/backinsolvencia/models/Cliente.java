@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 @Entity
 @Table(name = "cliente")
 @Builder
@@ -18,6 +21,15 @@ public class Cliente {
 
     @Column(unique = true, nullable = false)
     private String identificacion;
+
+    @Column(nullable = false)
+    private String ciudadExpedicion;
+
+    @Column(nullable = false)
+    private String departamentExpedicion;
+
+    @Column(nullable = false)
+    private String ciudadResidencia;
 
     @Column(nullable = false)
     private String nombres;
@@ -37,6 +49,15 @@ public class Cliente {
     @Column( nullable = true)
     private String profesion;
 
+    @Column(nullable = true)
+    private String estadoCivil;
+
+    @Column(nullable = true)
+    private LocalDate fechaNacimiento;
+
+    @Column(nullable = true)
+    private Integer personasaCargo;
+
     @Column( nullable = false)
     private Boolean camaraComercio;
 
@@ -52,5 +73,16 @@ public class Cliente {
     @OneToOne(mappedBy = "cliente")
     @JsonIgnore
     private Insolvencia insolvencia;
+
+
+    @Transient
+    public Integer getEdad() {
+
+        if (fechaNacimiento == null) {
+            return null;
+        }
+
+        return Period.between(fechaNacimiento, LocalDate.now()).getYears();
+    }
 
 }

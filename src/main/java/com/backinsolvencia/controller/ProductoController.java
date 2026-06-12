@@ -23,6 +23,12 @@ public class ProductoController {
         if (productos.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(productos, HttpStatus.OK);
     }
+    @GetMapping("/categorias")
+    public ResponseEntity<List<String>> getCategorias() {
+        List<String> categorias = productoService.getCategorias();
+        if (categorias.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(categorias,HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<Producto> findProductoById(@PathVariable long id) {

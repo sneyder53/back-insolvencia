@@ -26,11 +26,11 @@ public class Insolvencia {
 
     private float totalProductos;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne()
     @JoinColumn(name = "cliente_id", referencedColumnName = "id")
     private Cliente cliente;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable( name = "insolvencia_causas" ,
             joinColumns = @JoinColumn(name = "insolvencia_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "causa_id", referencedColumnName = "id"))
@@ -59,6 +59,10 @@ public class Insolvencia {
     private List<Judicial> judicial;
 
     private float varloCuotaMensual;
+
+    private float primerCuota;
+
+    private float totalHonorarios;
 
     private int tiempo;
 

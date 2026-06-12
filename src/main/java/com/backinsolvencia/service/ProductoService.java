@@ -1,5 +1,6 @@
 package com.backinsolvencia.service;
 
+import com.backinsolvencia.enums.CategoriaProducto;
 import com.backinsolvencia.exception.ExceptionsInsolvencia;
 import com.backinsolvencia.models.Acreedor;
 import com.backinsolvencia.models.Producto;
@@ -8,6 +9,7 @@ import com.backinsolvencia.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +56,8 @@ public class ProductoService {
         if (acreedorOptional.isPresent()) {
             if (productoOptional.isPresent()) {
                 productoOptional.get().setNombre(producto.getNombre());
+                productoOptional.get().setAcreedor(acreedorOptional.get());
+                productoOptional.get().setCategoria(producto.getCategoria());
                 return productoRepository.save(productoOptional.get());
             }else {
                 throw new ExceptionsInsolvencia("El producto no existe");
@@ -73,5 +77,11 @@ public class ProductoService {
             throw new ExceptionsInsolvencia("El producto no existe");
         }
 
+    }
+
+    public List<String> getCategorias() {
+        return Arrays.stream(CategoriaProducto.values())
+                .map(Enum::name)
+                .toList();
     }
 }
